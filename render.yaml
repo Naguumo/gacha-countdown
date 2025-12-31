@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: gacha-countdown
+    runtime: node
+    branch: main
+    startCommand: bun start
+    buildCommand: bun install && bun build
+    envVars:
+      - key: NITRO_PRESET
+        value: render_com
