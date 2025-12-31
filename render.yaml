@@ -2,6 +2,7 @@ services:
   - type: web
     name: gacha-countdown
     runtime: node
+    plan: free
     branch: main
     startCommand: bun production
     buildCommand: bun install && bun build
