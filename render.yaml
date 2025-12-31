@@ -3,7 +3,7 @@ services:
     name: gacha-countdown
     runtime: node
     branch: main
-    startCommand: bun start
+    startCommand: bun production
     buildCommand: bun install && bun build
     envVars:
       - key: NITRO_PRESET
