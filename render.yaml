@@ -4,8 +4,8 @@ services:
     runtime: node
     plan: free
     branch: main
-    startCommand: bun production
-    buildCommand: bun install && bun build
+    startCommand: bun run production
+    buildCommand: bun ci && bun run build
     envVars:
       - key: NITRO_PRESET
         value: render_com
