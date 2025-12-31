@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react-swc';
 import { nitro } from 'nitro/vite';
@@ -12,8 +13,9 @@ export default defineConfig({
     tsConfigPaths(),
     tanstackStart(),
     nitro(),
-    // react's vite plugin must come last
+    // react's vite plugin must come after tanstackStart and nitro
     viteReact(),
+    tailwindcss(),
   ],
   nitro: {},
 });
