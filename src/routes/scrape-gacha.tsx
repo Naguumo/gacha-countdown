@@ -1,5 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
+import { extractParamsFromUrl } from '@/lib/extractParamsFromUrl';
+import { scrapeGachaRadar } from '@/lib/gachaDataScraping/scrapeGachaRadar';
+import { scrapeReddit } from '@/lib/gachaDataScraping/scrapeReddit';
+
+const paramsSchema = z.object({
+  gacha: z.string(),
+});
 
 export const Route = createFileRoute('/scrape-gacha')({
   server: {
@@ -20,30 +27,49 @@ export const Route = createFileRoute('/scrape-gacha')({
           });
         }
 
-        await gatherGachaData(params.gacha);
-        return new Response('Gacha data scraped successfully!', {
-          status: 200,
-        });
+        try {
+          const data = await gatherGachaData(params.gacha);
+          return new Response(JSON.stringify(data, null, 2), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+        } catch (e) {
+          if (e instanceof z.ZodError) {
+            const msg = z.prettifyError(e);
+            return new Response(msg, {
+              status: 500,
+            });
+          }
+          return new Response('Internal Server Error', {
+            status: 500,
+          });
+        }
       },
     },
   },
 });
 
-const paramsSchema = z.object({
-  gacha: z.string(),
-});
+async function gatherGachaData(searchStr: string) {
+  const scrapePromises = [
+    // scrapeReddit(searchStr),
+    scrapeGachaRadar(searchStr),
+  ];
 
-function extractParamsFromUrl<S extends z.ZodType>(urlRaw: string, schema: S): z.infer<S> {
-  const url = new URL(urlRaw);
-  const params: Record<string, unknown> = {};
-  url.searchParams.forEach((value, key) => {
-    params[key] = value;
+  const results = await Promise.allSettled(scrapePromises);
+
+  const allData = results.map((result) => {
+    if (result.status === 'fulfilled') {
+      return {
+        source: result.value.source,
+        data: result.value.data,
+      };
+    }
+    return {
+      error: result.reason,
+    };
   });
 
-  const parsed = schema.parse(params);
-  return parsed;
-}
-
-async function gatherGachaData(searchStr: string) {
-  throw new Error('Function not implemented.');
+  return allData;
 }
