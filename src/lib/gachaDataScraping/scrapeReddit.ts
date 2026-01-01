@@ -18,6 +18,7 @@ const redditPostSchema = z.object({
     media: z.unknown(),
   }),
 });
+type RedditPost = z.infer<typeof redditPostSchema>['data'];
 
 const redditResponseSchema = z.object({
   data: z.object({
@@ -25,7 +26,7 @@ const redditResponseSchema = z.object({
   }),
 });
 
-export async function scrapeReddit(searchStr: string): Promise<ScrapeResults> {
+export async function scrapeReddit(searchStr: string): Promise<ScrapeResults<RedditPost[]>> {
   const userAgent = 'GachaGamesBot/1.0';
   const searchUrl = `https://www.reddit.com/r/gachagaming/search.json?q=${encodeURIComponent(searchStr)}&restrict_sr=1&sort=new&limit=10`;
 
@@ -42,17 +43,7 @@ export async function scrapeReddit(searchStr: string): Promise<ScrapeResults> {
   const rawJson = await response.json();
   const validated = redditResponseSchema.parse(rawJson);
 
-  const data = validated.data.children.map((post) => ({
-    title: post.data.title,
-    description: post.data.selftext || post.data.title,
-    author: post.data.author,
-    url: post.data.url,
-    thumbnail: post.data.thumbnail && post.data.thumbnail !== 'self' ? post.data.thumbnail : undefined,
-    createdAt: new Date(post.data.created_utc * 1000).toISOString(),
-    upvotes: post.data.ups || 0,
-    comments: post.data.num_comments || 0,
-    redditUrl: `https://reddit.com${post.data.url}` || post.data.url,
-  }));
+  const data = validated.data.children.map((post) => post.data);
 
   return {
     source: 'Reddit - r/gachagaming',

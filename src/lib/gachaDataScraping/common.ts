@@ -1,4 +1,4 @@
-export interface ScrapeResults {
+export interface ScrapeResults<Data = unknown> {
   source: string;
-  data: unknown;
+  data: Data;
 }
