@@ -48,14 +48,16 @@ function Home() {
         <p className='text-muted-foreground'>Discover upcoming and released gacha games</p>
       </header>
 
-      <div className='flex flex-col lg:flex-row gap-8'>
-        <aside className='lg:w-80 space-y-6'>
+      <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='mb-8 block md:hidden' />
+
+      <div className='flex flex-col md:flex-row gap-8'>
+        <aside className='md:w-80 space-y-6'>
           <FilterGroup title='Platforms' options={platformOptions} selectedValues={selectedPlatforms} onChange={setSelectedPlatforms} />
           <FilterGroup title='Status' options={statusOptions} selectedValues={selectedStatuses} onChange={setSelectedStatuses} />
         </aside>
 
         <main className='flex-1'>
-          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='mb-8' />
+          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='mb-8 hidden md:block' />
           <GameList games={filteredGames} />
         </main>
       </div>

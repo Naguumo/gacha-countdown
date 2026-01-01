@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useEffect, useReducer, useState } from 'react';
+import { createContext, type ReactNode, useContext, useReducer } from 'react';
 import z from 'zod';
 
 const themeSchema = z.enum(['dark', 'light', 'system']);
