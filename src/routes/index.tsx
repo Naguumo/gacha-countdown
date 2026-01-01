@@ -9,6 +9,11 @@ import { GameList } from '../components/GameList';
 import { SearchBar } from '../components/SearchBar';
 
 export const Route = createFileRoute('/')({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(allGamePlatformsQueryOptions());
+    await context.queryClient.ensureQueryData(allGameStatusesQueryOptions());
+    await context.queryClient.ensureQueryData(allGachaGamesQueryOptions());
+  },
   component: Home,
 });
 
@@ -37,10 +42,10 @@ function Home() {
   });
 
   return (
-    <div className='min-h-screen bg-gray-50 mx-auto px-4 py-8'>
+    <div className='min-h-screen bg-background mx-auto px-4 py-8'>
       <header className='mb-8'>
-        <h1 className='text-4xl font-bold text-gray-900 mb-2'>Gacha Games Countdown</h1>
-        <p className='text-gray-600'>Discover upcoming and released gacha games</p>
+        <h1 className='text-4xl font-bold mb-2'>Gacha Games Countdown</h1>
+        <p className='text-muted-foreground'>Discover upcoming and released gacha games</p>
       </header>
 
       <div className='flex flex-col lg:flex-row gap-8'>

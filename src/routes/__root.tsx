@@ -7,6 +7,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import type { ReactNode } from 'react';
 import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary';
 import { NotFound } from '@/components/NotFound';
+import { getInitializeThemeScript, ThemeProvider } from '@/components/ThemeProvider';
 import appCss from '../styles/app.css?url';
 
 export const Route = createRootRouteWithContext<{
@@ -29,6 +30,11 @@ export const Route = createRootRouteWithContext<{
       { rel: 'stylesheet', href: appCss },
       { rel: 'icon', href: '/favicon.ico' },
     ],
+    scripts: [
+      {
+        children: getInitializeThemeScript(),
+      },
+    ],
   }),
 
   errorComponent: (props) => (
@@ -50,12 +56,12 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
         <TanStackRouterDevtools position='bottom-right' />
         <ReactQueryDevtools buttonPosition='bottom-left' />
         <Scripts />

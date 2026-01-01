@@ -159,7 +159,7 @@ const mockGames: GachaGameListing[] = [
 
 export const fetchGachaGames = async (): Promise<GachaGameListing[]> => {
   const parsed = z.array(gachaGameListingSchema).parse(mockGames);
-  return parsed.toSorted((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
+  return parsed.toSorted((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate));
 };
 
 export const allGachaGamesQueryOptions = () =>

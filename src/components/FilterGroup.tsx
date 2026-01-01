@@ -1,4 +1,6 @@
 import { clsx } from 'clsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export interface FilterOption {
   label: string;
@@ -21,22 +23,21 @@ export function FilterGroup({ title, options, selectedValues, onChange, classNam
   };
 
   return (
-    <div className={clsx('bg-white rounded-lg shadow p-4', className)}>
-      <h3 className='font-semibold text-gray-900 mb-3'>{title}</h3>
-      <div className='space-y-2'>
-        {options.map((option) => (
-          <label key={option.value} className='flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded'>
-            <input
-              type='checkbox'
-              checked={selectedValues.includes(option.value)}
-              onChange={() => handleToggle(option.value)}
-              className='mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
-            />
-            <span className='flex-1 text-gray-700'>{option.label}</span>
-            {option.count !== undefined && <span className='text-gray-400 text-sm'>({option.count})</span>}
-          </label>
-        ))}
-      </div>
-    </div>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className='space-y-2'>
+          {options.map((option) => (
+            <label key={option.value} className='flex items-center cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors'>
+              <Checkbox checked={selectedValues.includes(option.value)} onCheckedChange={() => handleToggle(option.value)} className='mr-3' />
+              <span className='flex-1'>{option.label}</span>
+              {option.count !== undefined && <span className='text-muted-foreground text-sm'>({option.count})</span>}
+            </label>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
