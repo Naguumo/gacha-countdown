@@ -1,7 +1,8 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
-import { allGachaGamesQueryOptions } from '@/queries/gachaGames';
+import { useMediaBreakPoint } from '@/hooks/useMediaBreakpoint';
+import { allGachaGamesQueryOptions, type GachaGameListing } from '@/queries/gachaGames';
 import { allGamePlatformsQueryOptions, type GamePlatform } from '@/queries/platforms';
 import { allGameStatusesQueryOptions, type GameStatus } from '@/queries/statuses';
 import { FilterGroup } from '../components/FilterGroup';
@@ -16,6 +17,15 @@ export const Route = createFileRoute('/')({
   },
   component: Home,
 });
+
+const filterGames = (games: GachaGameListing[], search: string, selectedPlatforms: GamePlatform['id'][], selectedStatuses: GameStatus['id'][]) => {
+  return games.filter((game) => {
+    const matchesSearch = game.title.toLowerCase().includes(search.toLowerCase());
+    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some((p) => game.platforms.some((platform) => platform.id === p));
+    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.some((s) => game.status.id === s);
+    return matchesSearch && matchesPlatform && matchesStatus;
+  });
+};
 
 function Home() {
   const { data: platforms } = useSuspenseQuery(allGamePlatformsQueryOptions());
@@ -34,33 +44,32 @@ function Home() {
   const [selectedPlatforms, setSelectedPlatforms] = useState<GamePlatform['id'][]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<GameStatus['id'][]>([]);
 
-  const filteredGames = gachaGames.filter((game) => {
-    const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some((p) => game.platforms.some((platform) => platform.id === p));
-    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.some((s) => game.status.id === s);
-    return matchesSearch && matchesPlatform && matchesStatus;
-  });
+  const filteredGames = filterGames(gachaGames, searchQuery, selectedPlatforms, selectedStatuses);
+
+  const isMDBreakpoint = useMediaBreakPoint('md', true);
 
   return (
-    <div className='min-h-screen bg-background mx-auto px-4 py-8'>
-      <header className='mb-8'>
-        <h1 className='text-4xl font-bold mb-2'>Gacha Games Countdown</h1>
-        <p className='text-muted-foreground'>Discover upcoming and released gacha games</p>
-      </header>
-
-      <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='mb-8 block md:hidden' />
-
-      <div className='flex flex-col md:flex-row gap-8'>
-        <aside className='md:w-80 space-y-6'>
-          <FilterGroup title='Platforms' options={platformOptions} selectedValues={selectedPlatforms} onChange={setSelectedPlatforms} />
-          <FilterGroup title='Status' options={statusOptions} selectedValues={selectedStatuses} onChange={setSelectedStatuses} />
-        </aside>
-
-        <main className='flex-1'>
-          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='mb-8 hidden md:block' />
-          <GameList games={filteredGames} />
-        </main>
-      </div>
-    </div>
+    <main className='grid grid-cols-1 md:grid-cols-[max-content_auto] grid-rows-[max-content_auto] gap-8'>
+      <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='md:order-2' />
+      <aside className='md:w-80 space-y-6 row-span-2'>
+        <FilterGroup
+          title='Platforms'
+          options={platformOptions}
+          selectedValues={selectedPlatforms}
+          onChange={setSelectedPlatforms}
+          initiallyOpen={isMDBreakpoint}
+          key={`platforms-${isMDBreakpoint}`}
+        />
+        <FilterGroup
+          title='Status'
+          options={statusOptions}
+          selectedValues={selectedStatuses}
+          onChange={setSelectedStatuses}
+          initiallyOpen={isMDBreakpoint}
+          key={`status-${isMDBreakpoint}`}
+        />
+      </aside>
+      <GameList games={filteredGames} className='md:order-3' />
+    </main>
   );
 }

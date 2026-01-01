@@ -7,13 +7,20 @@ export interface SearchBarProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  inputClassName?: string;
 }
 
-export function SearchBar({ value, onChange, placeholder = 'Search games...', className }: SearchBarProps) {
+export function SearchBar({ value, onChange, placeholder = 'Search games...', className, inputClassName }: SearchBarProps) {
   return (
     <div className={clsx('relative', className)}>
-      <Search className='absolute left-3 top-2 h-5 w-5 text-muted-foreground' aria-hidden='true' />
-      <Input type='text' value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className='pl-10' />
+      <Search className='absolute left-6 top-3 h-fit w-6 text-muted-foreground' aria-hidden='true' />
+      <Input
+        type='text'
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={clsx('pl-16 py-6 md:text-lg', inputClassName)}
+      />
     </div>
   );
 }

@@ -14,11 +14,12 @@ export interface FilterGroupProps {
   options: FilterOption[];
   selectedValues: string[];
   onChange: (values: string[]) => void;
+  initiallyOpen?: boolean;
   className?: string;
 }
 
-export function FilterGroup({ title, options, selectedValues, onChange, className }: FilterGroupProps) {
-  const [isOpen, setIsOpen] = useState(true);
+export function FilterGroup({ title, options, selectedValues, onChange, className, initiallyOpen = true }: FilterGroupProps) {
+  const [isOpen, setIsOpen] = useState(initiallyOpen);
 
   const handleToggle = (value: string) => {
     const newValues = selectedValues.includes(value) ? selectedValues.filter((v) => v !== value) : [...selectedValues, value];
@@ -27,11 +28,9 @@ export function FilterGroup({ title, options, selectedValues, onChange, classNam
 
   return (
     <Card className={className}>
-      <CardHeader className='cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
-        <div className='flex items-center justify-between'>
-          <CardTitle>{title}</CardTitle>
-          {isOpen ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
-        </div>
+      <CardHeader className='cursor-pointer flex items-center justify-between' onClick={() => setIsOpen(!isOpen)}>
+        <CardTitle className='md:text-lg'>{title}</CardTitle>
+        {isOpen ? <ChevronUp className='h-4 w-4' /> : <ChevronDown className='h-4 w-4' />}
       </CardHeader>
       {isOpen && (
         <CardContent>

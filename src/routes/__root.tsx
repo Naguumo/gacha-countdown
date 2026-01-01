@@ -61,7 +61,15 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <div className='min-h-screen container bg-background mx-auto px-4 py-8'>
+            <header className='mb-8'>
+              <h1 className='text-4xl font-bold mb-2'>Gacha Games Countdown</h1>
+              <p className='text-muted-foreground'>Discover upcoming and released gacha games</p>
+            </header>
+            {children}
+          </div>
+        </ThemeProvider>
         <TanStackRouterDevtools position='bottom-right' />
         <ReactQueryDevtools buttonPosition='bottom-left' />
         <Scripts />

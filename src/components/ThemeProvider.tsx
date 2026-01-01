@@ -6,8 +6,6 @@ type Theme = z.infer<typeof themeSchema>;
 
 type ThemeProviderProps = {
   children: ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
 };
 
 type ThemeProviderState = {
@@ -36,7 +34,7 @@ const getThemeFromLocalStorage = (): Theme => {
   return storedThemeParse.data;
 };
 
-export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 'ui-theme', ...props }: ThemeProviderProps) {
+export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useReducer((prev: Theme, next: Theme) => {
     if (prev === next) return prev;
     localStorage.setItem(storageKey, next);
@@ -48,11 +46,7 @@ export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 
     setTheme,
   };
 
-  return (
-    <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
-    </ThemeProviderContext.Provider>
-  );
+  return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>;
 }
 
 export function getInitializeThemeScript() {
