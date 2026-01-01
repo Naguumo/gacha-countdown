@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ScrapeGachaRouteImport } from './routes/scrape-gacha'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ScrapeGachaRoute = ScrapeGachaRouteImport.update({
+  id: '/scrape-gacha',
+  path: '/scrape-gacha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +25,39 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/scrape-gacha': typeof ScrapeGachaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/scrape-gacha': typeof ScrapeGachaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/scrape-gacha': typeof ScrapeGachaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/scrape-gacha'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/scrape-gacha'
+  id: '__root__' | '/' | '/scrape-gacha'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ScrapeGachaRoute: typeof ScrapeGachaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/scrape-gacha': {
+      id: '/scrape-gacha'
+      path: '/scrape-gacha'
+      fullPath: '/scrape-gacha'
+      preLoaderRoute: typeof ScrapeGachaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ScrapeGachaRoute: ScrapeGachaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
