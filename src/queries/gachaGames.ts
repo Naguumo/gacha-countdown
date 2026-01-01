@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { gamePlatformSchema } from './platforms';
 import { gameStatusSchema } from './statuses';
 
-const gachaGameSchema = z.object({
+const gachaGameListingSchema = z.object({
   id: z.string(),
   title: z.string(),
   developer: z.string(),
@@ -13,9 +13,9 @@ const gachaGameSchema = z.object({
   description: z.string().optional(),
   status: gameStatusSchema,
 });
-export type GachaGame = z.infer<typeof gachaGameSchema>;
+export type GachaGameListing = z.infer<typeof gachaGameListingSchema>;
 
-const mockGames: GachaGame[] = [
+const mockGames: GachaGameListing[] = [
   {
     id: 'dragon-traveler',
     title: 'Dragon Traveler',
@@ -157,10 +157,8 @@ const mockGames: GachaGame[] = [
   },
 ];
 
-export const fetchGachaGames = async (): Promise<GachaGame[]> => {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  const parsed = z.array(gachaGameSchema).parse(mockGames);
+export const fetchGachaGames = async (): Promise<GachaGameListing[]> => {
+  const parsed = z.array(gachaGameListingSchema).parse(mockGames);
   return parsed.toSorted((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate))
 };
 

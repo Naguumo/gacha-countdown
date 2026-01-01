@@ -1,8 +1,8 @@
 import { clsx } from 'clsx';
-import type { GachaGame } from '@/queries/gachaGames';
+import type { GachaGameListing } from '@/queries/gachaGames';
 
 export interface GameListProps {
-  games: GachaGame[];
+  games: GachaGameListing[];
   loading?: boolean;
   className?: string;
 }
