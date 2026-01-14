@@ -8,7 +8,12 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!src/routeTree.gen.ts", "!src/generated/**/*"]
+    "includes": [
+      "**",
+      "!src/routeTree.gen.ts",
+      "!src/generated/**/*",
+      "!drizzle"
+    ]
   },
   "formatter": {
     "enabled": true,

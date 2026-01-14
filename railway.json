@@ -3,12 +3,7 @@
   "build": {
     "builder": "RAILPACK",
     "buildCommand": "bun run build",
-    "watchPatterns": [
-      "package.json",
-      "tsconfig.json",
-      "vite.config.ts",
-      "src/**"
-    ]
+    "watchPatterns": ["package.json", "tsconfig.json", "vite.config.ts", "src/**"]
   },
   "deploy": {
     "preDeployCommand": ["bun run db:migrate"],

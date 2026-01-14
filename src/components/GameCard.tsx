@@ -1,6 +1,6 @@
-import { clsx } from 'clsx';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 export interface GameCardProps {
   title: string;
@@ -15,7 +15,7 @@ export interface GameCardProps {
 
 export function GameCard({ title, developer, releaseDate, platforms, imageUrl, description, status = 'upcoming', className }: GameCardProps) {
   return (
-    <Card className={clsx('overflow-hidden hover:shadow-md transition-shadow duration-200', className)}>
+    <Card className={cn('overflow-hidden hover:shadow-md transition-shadow duration-200', className)}>
       <div className='flex flex-col md:flex-row'>
         {imageUrl && (
           <div className='md:w-48 h-48 md:h-auto'>
