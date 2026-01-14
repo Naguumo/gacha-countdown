@@ -8,12 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!src/routeTree.gen.ts",
-      "!src/generated/**/*",
-      "!drizzle"
-    ]
+    "includes": ["**", "!src/routeTree.gen.ts", "!src/generated/**/*", "!drizzle"]
   },
   "formatter": {
     "enabled": true,
@@ -34,6 +29,9 @@
       "recommended": true,
       "suspicious": {
         "noUnknownAtRules": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn"
       }
     }
   },

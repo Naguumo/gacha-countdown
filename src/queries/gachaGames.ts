@@ -7,7 +7,7 @@ const gachaGameListingSchema = z.object({
   id: z.string(),
   title: z.string(),
   developer: z.string(),
-  releaseDate: z.string(),
+  release: z.string(),
   platforms: z.array(gamePlatformSchema),
   imageUrl: z.string().optional(),
   description: z.string().optional(),
@@ -20,7 +20,7 @@ const mockGames: GachaGameListing[] = [
     id: 'dragon-traveler',
     title: 'Dragon Traveler',
     developer: 'HongKong GameTree LIMITED',
-    releaseDate: '2025-01-15',
+    release: '2025-01-15',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -34,7 +34,7 @@ const mockGames: GachaGameListing[] = [
     id: 'arknights-endfield',
     title: 'Arknights Endfield',
     developer: 'Hypergryph',
-    releaseDate: '2025-02-28',
+    release: '2025-02-28',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -49,7 +49,7 @@ const mockGames: GachaGameListing[] = [
     id: 'seven-deadly-sins-origin',
     title: 'The Seven Deadly Sins: Origin',
     developer: 'Netmarble',
-    releaseDate: '2025-03-20',
+    release: '2025-03-20',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -63,7 +63,7 @@ const mockGames: GachaGameListing[] = [
     id: 'mongil-star-dive',
     title: 'MONGIL: Star Dive',
     developer: 'Netmarble Monster Inc',
-    releaseDate: '2025-04-10',
+    release: '2025-04-10',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -77,7 +77,7 @@ const mockGames: GachaGameListing[] = [
     id: 'stoneage-pet-world',
     title: 'StoneAge: Pet World',
     developer: 'Netmarble',
-    releaseDate: '2025-05-01',
+    release: '2025-05-01',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -90,7 +90,7 @@ const mockGames: GachaGameListing[] = [
     id: 'azur-promilia',
     title: 'Azur Promilia',
     developer: 'Manjuu',
-    releaseDate: '2025-06-15',
+    release: '2025-06-15',
     platforms: [
       { id: 'PC', label: 'PC', gameCount: 7 },
       { id: 'Console', label: 'Console', gameCount: 3 },
@@ -103,7 +103,7 @@ const mockGames: GachaGameListing[] = [
     id: 'neverness-to-everness',
     title: 'Neverness to Everness',
     developer: 'Hotta Studio',
-    releaseDate: '2025-07-20',
+    release: '2025-07-20',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -118,7 +118,7 @@ const mockGames: GachaGameListing[] = [
     id: 'petit-planet',
     title: 'Petit Planet',
     developer: 'miHoYo',
-    releaseDate: '2025-08-10',
+    release: '2025-08-10',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -131,7 +131,7 @@ const mockGames: GachaGameListing[] = [
     id: 'solo-leveling-karma',
     title: 'Solo Leveling: KARMA',
     developer: 'Netmarble',
-    releaseDate: '2025-09-05',
+    release: '2025-09-05',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -145,7 +145,7 @@ const mockGames: GachaGameListing[] = [
     id: 'suikoden-star-leap',
     title: 'Suikoden STAR LEAP',
     developer: 'Mythril',
-    releaseDate: '2025-10-15',
+    release: '2025-10-15',
     platforms: [
       { id: 'iOS', label: 'iOS', gameCount: 7 },
       { id: 'Android', label: 'Android', gameCount: 7 },
@@ -159,7 +159,7 @@ const mockGames: GachaGameListing[] = [
 
 export const fetchGachaGames = async (): Promise<GachaGameListing[]> => {
   const parsed = z.array(gachaGameListingSchema).parse(mockGames);
-  return parsed.toSorted((a, b) => Date.parse(b.releaseDate) - Date.parse(a.releaseDate));
+  return parsed.toSorted((a, b) => Date.parse(b.release) - Date.parse(a.release));
 };
 
 export const allGachaGamesQueryOptions = () =>

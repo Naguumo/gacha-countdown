@@ -110,7 +110,7 @@ async function resolveDataWithAI(scrapedData: ScrapeResults[]): Promise<ScrapeRe
           {
                title: string;
                developer: string;
-               releaseDate: string;
+               release: string;
                platforms: string[];
                status: string;
                imageUrl?: string | undefined;

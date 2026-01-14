@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 export interface GameCardProps {
   title: string;
   developer: string;
-  releaseDate: string;
+  release: string;
   platforms: string[];
   imageUrl?: string;
   description?: string;
@@ -13,7 +13,7 @@ export interface GameCardProps {
   className?: string;
 }
 
-export function GameCard({ title, developer, releaseDate, platforms, imageUrl, description, status = 'upcoming', className }: GameCardProps) {
+export function GameCard({ title, developer, release, platforms, imageUrl, description, status = 'upcoming', className }: GameCardProps) {
   return (
     <Card className={cn('overflow-hidden hover:shadow-md transition-shadow duration-200', className)}>
       <div className='flex flex-col md:flex-row'>
@@ -36,7 +36,7 @@ export function GameCard({ title, developer, releaseDate, platforms, imageUrl, d
               </Badge>
             ))}
           </div>
-          <p className='text-sm text-muted-foreground'>Release: {new Date(releaseDate).toLocaleDateString()}</p>
+          <p className='text-sm text-muted-foreground'>Release: {new Date(release).toLocaleDateString()}</p>
         </CardContent>
       </div>
     </Card>

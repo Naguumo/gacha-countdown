@@ -5,7 +5,7 @@ const gachaRadarGameSchema = z.object({
   id: z.string(),
   title: z.string(),
   developer: z.string(),
-  releaseDate: z.string().optional(),
+  release: z.string().optional(),
   platforms: z.array(
     z.object({
       id: z.string(),
@@ -50,11 +50,11 @@ async function extractGameCards(html: string): Promise<GachaRadarGame[]> {
 
     if (!title || !developer) return;
 
-    let releaseDate = dateStr;
+    let release = dateStr;
     if (dateStr) {
       const dateObj = new Date(dateStr);
       if (!Number.isNaN(dateObj.getTime())) {
-        releaseDate = dateObj.toISOString().split('T')[0];
+        release = dateObj.toISOString().split('T')[0];
       }
     }
 
@@ -72,7 +72,7 @@ async function extractGameCards(html: string): Promise<GachaRadarGame[]> {
       id: cardId,
       title,
       developer,
-      releaseDate: releaseDate ?? undefined,
+      release: release ?? undefined,
       platforms: platformList,
       description: undefined,
       status,
