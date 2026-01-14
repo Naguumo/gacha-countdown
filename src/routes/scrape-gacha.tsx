@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
+import { env } from '@/lib/env';
 import { extractParamsFromUrl } from '@/lib/extractParamsFromUrl';
 import type { ScrapeResults } from '@/lib/gachaDataScraping/common';
 import { scrapeGachaRadar } from '@/lib/gachaDataScraping/scrapeGachaRadar';
@@ -98,7 +99,7 @@ async function resolveDataWithAI(scrapedData: ScrapeResults[]): Promise<ScrapeRe
     headers: {
       'Content-Type': 'application/json',
       'Accept-Language': 'en-US,en',
-      Authorization: `Bearer ${process.env.ZAI_API_KEY}`,
+      Authorization: `Bearer ${env.ZAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: 'GLM-4.6V-Flash',
