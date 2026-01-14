@@ -1,0 +1,17 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "RAILPACK",
+    "buildCommand": "bun ci && bun run build",
+    "watchPatterns": [
+      "package.json",
+      "tsconfig.json",
+      "vite.config.ts",
+      "src/**"
+    ]
+  },
+  "deploy": {
+    "preDeployCommand": ["bun run db:migrate"],
+    "startCommand": "bun run production"
+  }
+}
