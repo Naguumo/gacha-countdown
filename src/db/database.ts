@@ -1,9 +1,15 @@
+import { createServerOnlyFn } from '@tanstack/react-start';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { env } from '@/lib/env';
 
-const connectionString = env.SUPABASE_URL;
+const setupDatabase = createServerOnlyFn(() => {
+  const connectionString = env.SUPABASE_URL;
+  // Disable prefetch as it is not supported for "Transaction" pool mode
+  const client = postgres(connectionString, { prepare: false });
+  return drizzle({
+    client,
+  });
+});
 
-// Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(connectionString, { prepare: false });
-export const db = drizzle(client);
+export const db = setupDatabase();

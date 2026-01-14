@@ -20,6 +20,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search games...', cl
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={clsx('pl-16 py-6 md:text-lg', inputClassName)}
+        autoComplete='off'
       />
     </div>
   );

@@ -49,7 +49,7 @@ function Home() {
   const isMDBreakpoint = useMediaBreakPoint('md', true);
 
   return (
-    <main className='grid grid-cols-1 md:grid-cols-[max-content_auto] grid-rows-[max-content_auto] gap-8'>
+    <main className='grid grid-cols-1 md:grid-cols-[max-content_auto] grid-rows-[max-content_auto] gap-8' suppressHydrationWarning>
       <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder='Search gacha games...' className='md:order-2' />
       <aside className='md:w-80 space-y-6 row-span-2'>
         <FilterGroup
