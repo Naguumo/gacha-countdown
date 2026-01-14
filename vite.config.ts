@@ -1,7 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react-swc';
-import { nitro } from 'nitro/vite';
 import { tailwindResolver } from 'tailwind-resolver/vite';
 import { defineConfig } from 'vite';
 import tsConfigPaths from 'vite-tsconfig-paths';
@@ -13,13 +12,11 @@ export default defineConfig({
   plugins: [
     tsConfigPaths(),
     tanstackStart(),
-    nitro(),
-    // react's vite plugin must come after tanstackStart and nitro
+    // react's vite plugin must come after tanstackStart
     viteReact(),
     tailwindcss(),
     tailwindResolver({
       input: 'src/styles/app.css',
     }),
   ],
-  nitro: {},
 });

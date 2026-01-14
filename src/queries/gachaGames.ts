@@ -166,5 +166,22 @@ export const allGachaGamesQueryOptions = () =>
   queryOptions({
     queryKey: ['gachaGames'],
     queryFn: fetchGachaGames,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+const gachaGameDetailSchema = gachaGameListingSchema.extend({});
+
+export type GachaGameDetail = z.infer<typeof gachaGameDetailSchema>;
+
+export const fetchGachaGameDetail = async (gameId: string): Promise<GachaGameDetail> => {
+  const game = mockGames.find((g) => g.id === gameId);
+  if (!game) {
+    throw new Error('Game not found');
+  }
+  return gachaGameDetailSchema.parse(game);
+};
+
+export const gachaGameDetailQueryOptions = (gameId: string) =>
+  queryOptions({
+    queryKey: ['gachaGameDetail', gameId],
+    queryFn: () => fetchGachaGameDetail(gameId),
   });
