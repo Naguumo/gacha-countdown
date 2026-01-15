@@ -1,19 +1,22 @@
+import { Calendar, Search } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { cleanEnumForDisplay } from '@/lib/formatting/cleanEnum';
+import { formatGamePlatform } from '@/lib/formatting/gachaGames';
 import { cn } from '@/lib/utils';
-import type { GachaGameListing } from '@/queries/gachaGames';
+import type { GachaGameListing } from '@/schemas/gachaGames';
 
 export interface GameListProps {
   games: GachaGameListing[];
-  loading?: boolean;
+  isLoading?: boolean;
   className?: string;
 }
 
-export function GameList({ games, loading = false, className }: GameListProps) {
-  if (loading) {
+export function GameList({ games, isLoading = false, className }: GameListProps) {
+  if (isLoading) {
     return (
       <div className={cn('space-y-6', className)}>
-        {[...Array(3)].map((_, i) => (
+        {Array(3).map((_, i) => (
           <Card key={`skeleton-${Date.now()}-${i}`} className='overflow-hidden border-0 bg-linear-to-br from-card to-card/50 backdrop-blur-sm animate-pulse'>
             <CardContent className='p-0'>
               <div className='flex flex-col md:flex-row'>
@@ -37,9 +40,7 @@ export function GameList({ games, loading = false, className }: GameListProps) {
       <div className={cn('text-center py-12', className)}>
         <div className='max-w-md mx-auto'>
           <div className='w-20 h-20 mx-auto mb-4 rounded-full bg-muted/30 flex items-center justify-center transition-transform duration-300 hover:scale-105'>
-            <svg className='w-10 h-10 text-muted-foreground' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={1.5} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
-            </svg>
+            <Search className='w-10 h-10 text-muted-foreground' />
           </div>
           <p className='text-muted-foreground text-lg font-medium mb-1'>No games found</p>
           <p className='text-muted-foreground/60 text-sm'>Try adjusting your filters or search terms</p>
@@ -69,28 +70,21 @@ export function GameList({ games, loading = false, className }: GameListProps) {
                     <p className='text-muted-foreground text-sm font-medium'>by {game.developer}</p>
                   </div>
                   <Badge
-                    variant={game.status.id === 'released' ? 'default' : game.status.id === 'beta' ? 'secondary' : 'outline'}
+                    variant={game.status === 'released' ? 'default' : game.status === 'beta' ? 'secondary' : 'outline'}
                     className='shrink-0 ml-3 text-xs font-semibold px-2 py-1 rounded-full border-2'>
-                    {game.status.label}
+                    {cleanEnumForDisplay(game.status)}
                   </Badge>
                 </div>
                 {game.description && <p className='text-sm mb-3 line-clamp-2 text-muted-foreground/80 leading-relaxed'>{game.description}</p>}
                 <div className='flex flex-wrap gap-1.5 mb-3'>
                   {game.platforms.map((platform) => (
-                    <Badge key={platform.id} variant='secondary' className='text-xs font-medium px-2 py-0.5 bg-muted/30 hover:bg-muted/50 transition-colors'>
-                      {platform.label}
+                    <Badge key={platform} variant='secondary' className='text-xs font-medium px-2 py-0.5 bg-muted/30 hover:bg-muted/50 transition-colors'>
+                      {formatGamePlatform(platform)}
                     </Badge>
                   ))}
                 </div>
                 <div className='flex items-center text-sm text-muted-foreground/70'>
-                  <svg className='w-4 h-4 mr-1.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
-                    />
-                  </svg>
+                  <Calendar className='w-4 h-4 mr-1.5' />
                   {new Date(game.release).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',

@@ -9,55 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ScrapeGachaRouteImport } from './routes/scrape-gacha'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiScrapeGachaRouteImport } from './routes/api/scrape-gacha'
+import { Route as ApiGachaGamesIndexRouteImport } from './routes/api/gacha-games/index'
 
-const ScrapeGachaRoute = ScrapeGachaRouteImport.update({
-  id: '/scrape-gacha',
-  path: '/scrape-gacha',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiScrapeGachaRoute = ApiScrapeGachaRouteImport.update({
+  id: '/api/scrape-gacha',
+  path: '/api/scrape-gacha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGachaGamesIndexRoute = ApiGachaGamesIndexRouteImport.update({
+  id: '/api/gacha-games/',
+  path: '/api/gacha-games/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/scrape-gacha': typeof ScrapeGachaRoute
+  '/api/scrape-gacha': typeof ApiScrapeGachaRoute
+  '/api/gacha-games': typeof ApiGachaGamesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/scrape-gacha': typeof ScrapeGachaRoute
+  '/api/scrape-gacha': typeof ApiScrapeGachaRoute
+  '/api/gacha-games': typeof ApiGachaGamesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/scrape-gacha': typeof ScrapeGachaRoute
+  '/api/scrape-gacha': typeof ApiScrapeGachaRoute
+  '/api/gacha-games/': typeof ApiGachaGamesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scrape-gacha'
+  fullPaths: '/' | '/api/scrape-gacha' | '/api/gacha-games'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scrape-gacha'
-  id: '__root__' | '/' | '/scrape-gacha'
+  to: '/' | '/api/scrape-gacha' | '/api/gacha-games'
+  id: '__root__' | '/' | '/api/scrape-gacha' | '/api/gacha-games/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ScrapeGachaRoute: typeof ScrapeGachaRoute
+  ApiScrapeGachaRoute: typeof ApiScrapeGachaRoute
+  ApiGachaGamesIndexRoute: typeof ApiGachaGamesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/scrape-gacha': {
-      id: '/scrape-gacha'
-      path: '/scrape-gacha'
-      fullPath: '/scrape-gacha'
-      preLoaderRoute: typeof ScrapeGachaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/scrape-gacha': {
+      id: '/api/scrape-gacha'
+      path: '/api/scrape-gacha'
+      fullPath: '/api/scrape-gacha'
+      preLoaderRoute: typeof ApiScrapeGachaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gacha-games/': {
+      id: '/api/gacha-games/'
+      path: '/api/gacha-games'
+      fullPath: '/api/gacha-games'
+      preLoaderRoute: typeof ApiGachaGamesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ScrapeGachaRoute: ScrapeGachaRoute,
+  ApiScrapeGachaRoute: ApiScrapeGachaRoute,
+  ApiGachaGamesIndexRoute: ApiGachaGamesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

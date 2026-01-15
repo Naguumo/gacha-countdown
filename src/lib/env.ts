@@ -7,6 +7,10 @@ const envValidationSchema = z.object({
 });
 
 const getEnv = () => {
+  if (typeof window !== 'undefined') {
+    throw new Error('ENV should only be initialized on the server side.');
+  }
+
   const rawEnv = config({
     convention: 'nextjs',
     quiet: true,

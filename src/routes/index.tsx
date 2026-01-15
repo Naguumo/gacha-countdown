@@ -1,18 +1,17 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useMediaBreakPoint } from '@/hooks/useMediaBreakpoint';
-import { allGachaGamesQueryOptions, type GachaGameListing } from '@/queries/gachaGames';
-import { allGamePlatformsQueryOptions, type GamePlatform } from '@/queries/platforms';
-import { allGameStatusesQueryOptions, type GameStatus } from '@/queries/statuses';
+import { cleanEnumForDisplay } from '@/lib/formatting/cleanEnum';
+import { formatGamePlatform } from '@/lib/formatting/gachaGames';
+import { allGachaGamesQueryOptions } from '@/queries/gachaGames';
+import { type GachaGameListing, type GamePlatform, type GameStatus, gamePlatformSchema, gameStatusSchema } from '@/schemas/gachaGames';
 import { FilterGroup } from '../components/FilterGroup';
 import { GameList } from '../components/GameList';
 import { SearchBar } from '../components/SearchBar';
 
 export const Route = createFileRoute('/')({
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(allGamePlatformsQueryOptions());
-    await context.queryClient.ensureQueryData(allGameStatusesQueryOptions());
     await context.queryClient.ensureQueryData(allGachaGamesQueryOptions());
   },
   component: Home,
@@ -28,23 +27,13 @@ const filterGames = (games: GachaGameListing[], search: string, selectedPlatform
 };
 
 function Home() {
-  const { data: platforms } = useSuspenseQuery(allGamePlatformsQueryOptions());
-  const platformOptions = platforms.map((platform) => ({
-    label: platform.label,
-    value: platform.id,
-  }));
-  const { data: statuses } = useSuspenseQuery(allGameStatusesQueryOptions());
-  const statusOptions = statuses.map((status) => ({
-    label: status.label,
-    value: status.id,
-  }));
-  const { data: gachaGames } = useSuspenseQuery(allGachaGamesQueryOptions());
+  const { data: gachaGames, isLoading: isLoadingGachas } = useQuery(allGachaGamesQueryOptions());
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPlatforms, setSelectedPlatforms] = useState<GamePlatform['id'][]>([]);
-  const [selectedStatuses, setSelectedStatuses] = useState<GameStatus['id'][]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<GamePlatform[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<GameStatus[]>([]);
 
-  const filteredGames = filterGames(gachaGames, searchQuery, selectedPlatforms, selectedStatuses);
+  const filteredGames = filterGames(gachaGames ?? [], searchQuery, selectedPlatforms, selectedStatuses);
 
   const isMDBreakpoint = useMediaBreakPoint('md', true);
 
@@ -84,7 +73,10 @@ function Home() {
           </div>
           <FilterGroup
             title='Platforms'
-            options={platformOptions}
+            options={gamePlatformSchema.options.map((option) => ({
+              label: formatGamePlatform(option),
+              value: option,
+            }))}
             selectedValues={selectedPlatforms}
             onChange={setSelectedPlatforms}
             initiallyOpen={isMDBreakpoint}
@@ -92,7 +84,10 @@ function Home() {
           />
           <FilterGroup
             title='Status'
-            options={statusOptions}
+            options={gameStatusSchema.options.map((option) => ({
+              label: cleanEnumForDisplay(option),
+              value: option,
+            }))}
             selectedValues={selectedStatuses}
             onChange={setSelectedStatuses}
             initiallyOpen={isMDBreakpoint}
@@ -100,7 +95,7 @@ function Home() {
           />
         </div>
       </aside>
-      <GameList games={filteredGames} className='md:order-3' />
+      <GameList games={filteredGames} isLoading={isLoadingGachas} className='md:order-3' />
     </main>
   );
 }

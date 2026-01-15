@@ -19,7 +19,7 @@ export const gachaGamesTable = p.pgTable.withRLS('gacha_games', {
   imageUrl: p.text('image_url'),
   createdAt: p.timestamp('created_at').defaultNow().notNull(),
   status: gameStatusEnum('status').notNull().default('upcoming'),
-  platforms: gamePlatformEnum('platforms').array(),
+  platforms: gamePlatformEnum('platforms').array().notNull().default([]),
 });
 
 // DO NOT CHANGE THIS TABLE, IT IS MANAGED BY SUPABASE AUTH

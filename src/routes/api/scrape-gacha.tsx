@@ -10,7 +10,7 @@ const paramsSchema = z.object({
   gacha: z.string(),
 });
 
-export const Route = createFileRoute('/scrape-gacha')({
+export const Route = createFileRoute('/api/scrape-gacha')({
   server: {
     handlers: {
       GET: async ({ request }) => {

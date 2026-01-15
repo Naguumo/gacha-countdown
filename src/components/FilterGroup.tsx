@@ -1,28 +1,29 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
-export interface FilterOption {
+interface FilterOption<V extends string> {
   label: string;
-  value: string;
+  value: V;
   count?: number;
 }
 
-export interface FilterGroupProps {
+interface FilterGroupProps<V extends string> {
   title: string;
-  options: FilterOption[];
-  selectedValues: string[];
-  onChange: (values: string[]) => void;
+  options: FilterOption<V>[];
+  selectedValues: V[];
+  onChange: (values: V[]) => void;
   initiallyOpen?: boolean;
   className?: string;
 }
 
-export function FilterGroup({ title, options, selectedValues, onChange, className, initiallyOpen = true }: FilterGroupProps) {
+export function FilterGroup<V extends string>({ title, options, selectedValues, onChange, className, initiallyOpen = true }: FilterGroupProps<V>) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
-  const handleToggle = (value: string) => {
+  const handleToggle = (value: V) => {
     const newValues = selectedValues.includes(value) ? selectedValues.filter((v) => v !== value) : [...selectedValues, value];
     onChange(newValues);
   };
@@ -41,44 +42,63 @@ export function FilterGroup({ title, options, selectedValues, onChange, classNam
           )}
         </div>
       </CardHeader>
-      <div
-        className='transition-all duration-300 ease-in-out overflow-hidden'
-        style={{
-          maxHeight: isOpen ? '500px' : '0',
-          opacity: isOpen ? 1 : 0,
-        }}>
-        <CardContent className='pt-0'>
-          <fieldset>
-            <legend className='sr-only'>{title}</legend>
-            <div className='space-y-1'>
-              {options.map((option, index) => (
-                <label
-                  key={option.value}
-                  htmlFor={`filter-${option.value}`}
-                  className='flex items-center cursor-pointer hover:bg-muted/50 p-3 rounded-md transition-all duration-200 hover:translate-x-1 group opacity-0'
-                  style={{
-                    opacity: isOpen ? 1 : 0,
-                    transform: isOpen ? 'translateY(0)' : 'translateY(-10px)',
-                    transition: `all 0.2s ease-out ${index * 0.05}s`,
-                  }}>
-                  <Checkbox
-                    id={`filter-${option.value}`}
-                    checked={selectedValues.includes(option.value)}
-                    onCheckedChange={() => handleToggle(option.value)}
-                    className='mr-3 data-[state=checked]:bg-primary data-[state=checked]:border-primary'
-                  />
-                  <span className='flex-1 font-medium group-hover:text-foreground transition-colors duration-200'>{option.label}</span>
-                  {option.count !== undefined && (
-                    <span className='text-muted-foreground text-sm bg-muted/50 px-2 py-1 rounded-full group-hover:bg-muted/70 transition-colors duration-200'>
-                      {option.count}
-                    </span>
-                  )}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        </CardContent>
-      </div>
+      <AnimatePresence initial={false} propagate presenceAffectsLayout mode='wait'>
+        {isOpen && (
+          <motion.div
+            className='overflow-hidden'
+            initial='hidden'
+            animate='visible'
+            exit='hidden'
+            variants={{
+              hidden: {
+                maxHeight: '0',
+                opacity: 0,
+              },
+              visible: {
+                maxHeight: '500px',
+                opacity: 1,
+              },
+            }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            layout>
+            <CardContent className='pt-0'>
+              <fieldset>
+                <legend className='sr-only'>{title}</legend>
+                <div className='space-y-1'>
+                  {options.map((option, index) => (
+                    <motion.label
+                      key={option.value}
+                      htmlFor={`filter-${option.value}`}
+                      className='flex items-center cursor-pointer hover:bg-muted/50 p-3 rounded-md duration-200 hover:translate-x-1 group'
+                      variants={{
+                        hidden: { opacity: 0, translateY: -10 },
+                        visible: { opacity: 1, translateY: 0 },
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        ease: 'easeOut',
+                        delay: index * 0.05,
+                      }}>
+                      <Checkbox
+                        id={`filter-${option.value}`}
+                        checked={selectedValues.includes(option.value)}
+                        onCheckedChange={() => handleToggle(option.value)}
+                        className='mr-3 data-[state=checked]:bg-primary data-[state=checked]:border-primary'
+                      />
+                      <span className='flex-1 font-medium group-hover:text-foreground transition-colors duration-200'>{option.label}</span>
+                      {option.count !== undefined && (
+                        <span className='text-muted-foreground text-sm bg-muted/50 px-2 py-1 rounded-full group-hover:bg-muted/70 transition-colors duration-200'>
+                          {option.count}
+                        </span>
+                      )}
+                    </motion.label>
+                  ))}
+                </div>
+              </fieldset>
+            </CardContent>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Card>
   );
 }
