@@ -1,6 +1,8 @@
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
+import { isValidationError } from 'up-fetch';
+import z, { ZodError } from 'zod';
 import { useMediaBreakPoint } from '@/hooks/useMediaBreakpoint';
 import { cleanEnumForDisplay } from '@/lib/formatting/cleanEnum';
 import { formatGamePlatform } from '@/lib/formatting/gachaGames';
@@ -12,16 +14,24 @@ import { SearchBar } from '../components/SearchBar';
 
 export const Route = createFileRoute('/')({
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(allGachaGamesQueryOptions());
+    try {
+      await context.queryClient.ensureQueryData(allGachaGamesQueryOptions());
+    } catch (e) {
+      if (e instanceof ZodError || isValidationError(e)) {
+        console.error(z.prettifyError(e));
+        return;
+      }
+      console.error(e);
+    }
   },
   component: Home,
 });
 
-const filterGames = (games: GachaGameListing[], search: string, selectedPlatforms: GamePlatform['id'][], selectedStatuses: GameStatus['id'][]) => {
+const filterGames = (games: GachaGameListing[], search: string, selectedPlatforms: GamePlatform[], selectedStatuses: GameStatus[]) => {
   return games.filter((game) => {
     const matchesSearch = game.title.toLowerCase().includes(search.toLowerCase());
-    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some((p) => game.platforms.some((platform) => platform.id === p));
-    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.some((s) => game.status.id === s);
+    const matchesPlatform = selectedPlatforms.length === 0 || selectedPlatforms.some((p) => game.platforms.some((platform) => platform === p));
+    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.some((s) => game.status === s);
     return matchesSearch && matchesPlatform && matchesStatus;
   });
 };
