@@ -11,7 +11,7 @@ export const profilesTable = p.pgTable.withRLS('profiles', {
 export const gameStatusEnum = p.pgEnum('game_status', ['upcoming', 'beta', 'released', 'end_of_service']);
 export const gamePlatformEnum = p.pgEnum('game_platform', ['ios', 'android', 'pc', 'console']);
 export const gachaGamesTable = p.pgTable.withRLS('gacha_games', {
-  id: p.uuid('id').primaryKey().notNull(),
+  id: p.uuid('id').primaryKey().notNull().defaultRandom(),
   title: p.text('title').notNull(),
   description: p.text('description').notNull(),
   developer: p.text('developer').notNull(),
